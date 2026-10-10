@@ -1,0 +1,791 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ogirok-ua.local/schemas/military-order-parser.schema.json",
+  "title": "Schema парсера наказу по особовому складу",
+  "description": "Структурована схема для вилучення даних з наказів по особовому складу.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "order": {
+      "$ref": "#/definitions/order"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/orderItem"
+      }
+    }
+  },
+  "required": [
+    "order",
+    "items"
+  ],
+  "definitions": {
+    "date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.[0-9]{4}$"
+    },
+    "order": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "$ref": "#/definitions/date"
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "наказ по особовому складу",
+            "наказ по стройовій частині",
+            "наказ",
+            null
+          ]
+        }
+      },
+      "required": [
+        "number",
+        "date",
+        "city",
+        "unit",
+        "type"
+      ]
+    },
+    "orderItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "number": {
+          "type": "string"
+        },
+        "subnumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "action": {
+          "$ref": "#/definitions/action"
+        },
+        "person": {
+          "$ref": "#/definitions/person"
+        },
+        "dates": {
+          "$ref": "#/definitions/dates"
+        },
+        "service": {
+          "$ref": "#/definitions/service"
+        },
+        "employment": {
+          "$ref": "#/definitions/employment"
+        },
+        "leave": {
+          "$ref": "#/definitions/leave"
+        },
+        "business_trip": {
+          "$ref": "#/definitions/businessTrip"
+        },
+        "payments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/payment"
+          }
+        },
+        "security": {
+          "$ref": "#/definitions/security"
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/document"
+          }
+        },
+        "basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "raw_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "number",
+        "subnumber",
+        "action",
+        "person",
+        "dates",
+        "service",
+        "employment",
+        "leave",
+        "business_trip",
+        "payments",
+        "security",
+        "documents",
+        "basis",
+        "raw_text"
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "appointment",
+            "transfer",
+            "dismissal",
+            "enrollment",
+            "exclusion",
+            "rank_assignment",
+            "leave",
+            "business_trip",
+            "employment",
+            "payment",
+            "reserve_enrollment",
+            "reserve_appointment",
+            "training_assembly",
+            "arrival",
+            "departure",
+            "duty_start",
+            "duty_end",
+            "change_personal_data",
+            "housing",
+            "security_access",
+            "other"
+          ]
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ]
+    },
+    "person": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "military_personnel",
+            "civilian_employee",
+            "reservist",
+            "military_liable",
+            "family_member",
+            "other",
+            null
+          ]
+        },
+        "rank": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "last_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "first_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "middle_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "full_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "position": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_position": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "new_position": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "new_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "rank",
+        "last_name",
+        "first_name",
+        "middle_name",
+        "full_name",
+        "position",
+        "previous_position",
+        "new_position",
+        "unit",
+        "previous_unit",
+        "new_unit"
+      ]
+    },
+    "dates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "effective": {
+          "$ref": "#/definitions/date"
+        },
+        "start": {
+          "$ref": "#/definitions/date"
+        },
+        "end": {
+          "$ref": "#/definitions/date"
+        }
+      },
+      "required": [
+        "effective",
+        "start",
+        "end"
+      ]
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "service_years": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "calendar_service_years": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "calendar_service_months": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 11
+        },
+        "preferential_service_years": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "preferential_service_months": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 11
+        },
+        "military_specialty": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shpk": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tariff_grade": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rank_previous": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rank_new": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contract_duration_years": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "military_registration": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "service_years",
+        "calendar_service_years",
+        "calendar_service_months",
+        "preferential_service_years",
+        "preferential_service_months",
+        "military_specialty",
+        "shpk",
+        "tariff_grade",
+        "rank_previous",
+        "rank_new",
+        "contract_duration_years",
+        "military_registration"
+      ]
+    },
+    "employment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "salary": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "UAH",
+            null
+          ]
+        },
+        "employment_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "основне місце роботи",
+            "сумісництво",
+            "переведення",
+            "неповний робочий час",
+            "інше",
+            null
+          ]
+        },
+        "working_hours": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "working_days": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "probation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "probation_enabled": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "probation_months": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "payment_description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "position",
+        "salary",
+        "currency",
+        "employment_type",
+        "working_hours",
+        "working_days",
+        "probation",
+        "probation_enabled",
+        "probation_months",
+        "payment_description"
+      ]
+    },
+    "leave": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "annual",
+            "additional",
+            "family",
+            "medical",
+            "educational",
+            "encouragement",
+            "without_pay",
+            "other",
+            null
+          ]
+        },
+        "type_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "duration_days": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paid": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "exclude_from_provisions": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "travel_documents": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "travel_money": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "type_text",
+        "duration_days",
+        "destination",
+        "paid",
+        "exclude_from_provisions",
+        "travel_documents",
+        "travel_money"
+      ]
+    },
+    "businessTrip": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "destination": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "purpose": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "duration_days": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "transport": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "destination",
+        "purpose",
+        "duration_days",
+        "transport"
+      ]
+    },
+    "payment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "monthly_bonus",
+            "special_tasks_bonus",
+            "restricted_access_bonus",
+            "seniority_bonus",
+            "health_improvement_payment",
+            "severance_payment",
+            "leave_compensation",
+            "food_compensation",
+            "travel_money",
+            "burial_assistance",
+            "salary",
+            "allowance",
+            "surcharge",
+            "other"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "amount": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "UAH",
+            null
+          ]
+        },
+        "percent": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "base": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "period_start": {
+          "$ref": "#/definitions/date"
+        },
+        "period_end": {
+          "$ref": "#/definitions/date"
+        }
+      },
+      "required": [
+        "type",
+        "description",
+        "amount",
+        "currency",
+        "percent",
+        "base",
+        "period_start",
+        "period_end"
+      ]
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "secret_access": {
+          "type": "boolean"
+        },
+        "secret_levels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "access_action": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "grant",
+            "terminate",
+            "restrict",
+            "none",
+            null
+          ]
+        },
+        "allowance_percent": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "secret_access",
+        "secret_levels",
+        "access_action",
+        "allowance_percent"
+      ]
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "$ref": "#/definitions/date"
+        },
+        "issuer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "number",
+        "date",
+        "issuer",
+        "text"
+      ]
+    }
+  }
+}

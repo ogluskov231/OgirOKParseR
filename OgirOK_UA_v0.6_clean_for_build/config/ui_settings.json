@@ -1,0 +1,20 @@
+{
+  "font": {
+    "family": "Times New Roman",
+    "size": 9
+  },
+  "colors": {
+    "BLOCK_ACTIVE": "#fff3b0",
+    "MATCH_ACTIVE": "#70f57d",
+    "CAT_MATCH": "#ffd8a8",
+    "PIB_MATCH": "#d2dbf9",
+    "FIND": "#ffff00",
+    "EVT_ARRIVAL": "#d3f9d8",
+    "EVT_DEPARTURE": "#ffd6d6",
+    "EVT_SPECIAL_MED": "#d0ebff",
+    "EVT_SPECIAL_VACATION": "#fff3bf",
+    "EVT_SPECIAL_TRIP": "#e5dbff",
+    "EVT_BOTH": "#fff3bf"
+  },
+  "wrap_person_text": true
+}

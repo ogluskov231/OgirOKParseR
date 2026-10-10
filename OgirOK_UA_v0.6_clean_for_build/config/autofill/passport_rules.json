@@ -1,0 +1,439 @@
+{
+  "schema": "autofill-passport-rules/v1",
+  "template": {
+    "workbook": "N_fixed.xlsx",
+    "dictionary_sheet": "Категорії",
+    "stable": true,
+    "row_start": 4,
+    "header_row": 3,
+    "notes": "Паспорт-правила для автозаповнення незмінного шаблону N_fixed.xlsx з результатів DOCX/JSON-парсера."
+  },
+  "inputs": {
+    "primary": {
+      "type": "json",
+      "files": [
+        "combined_v2.json",
+        "people/*.json"
+      ],
+      "required_top_keys": [
+        "people"
+      ],
+      "record_shape": {
+        "pib": "string",
+        "records": "array"
+      }
+    },
+    "secondary": {
+      "type": "docx",
+      "purpose": "fallback для приміток/контексту та для полів, яких немає у JSON"
+    }
+  },
+  "routing": {
+    "event_type_values": [
+      "arrival",
+      "departure"
+    ],
+    "is_attached_sources": [
+      "record.is_attached",
+      "record.unit_flags.contains('придані')",
+      "text_contains(['приданий','придані'])"
+    ],
+    "rules": [
+      {
+        "when": {
+          "event_type": "arrival",
+          "is_attached": false
+        },
+        "sheet": "Н 56 омпбр"
+      },
+      {
+        "when": {
+          "event_type": "departure",
+          "is_attached": false
+        },
+        "sheet": "В 56 омпбр"
+      },
+      {
+        "when": {
+          "event_type": "arrival",
+          "is_attached": true
+        },
+        "sheet": "Н придані 56 омпбр"
+      },
+      {
+        "when": {
+          "event_type": "departure",
+          "is_attached": true
+        },
+        "sheet": "В придані 56 омпбр"
+      }
+    ],
+    "on_unknown": {
+      "action": "skip",
+      "log_level": "error",
+      "message": "Неможливо визначити аркуш: event_type/is_attached не розпізнано"
+    }
+  },
+  "source_priority": {
+    "default": [
+      "json",
+      "docx"
+    ],
+    "field_overrides": {
+      "note": [
+        "docx",
+        "json"
+      ],
+      "order_number": [
+        "json",
+        "docx"
+      ],
+      "pib": [
+        "json",
+        "docx"
+      ],
+      "rank": [
+        "json",
+        "docx"
+      ],
+      "position": [
+        "json",
+        "docx"
+      ],
+      "unit_from": [
+        "json",
+        "docx"
+      ],
+      "unit_to": [
+        "json",
+        "docx"
+      ],
+      "event_date": [
+        "json",
+        "docx"
+      ]
+    }
+  },
+  "row_creation": {
+    "row_is_record_if": {
+      "sheet_type": "any",
+      "required_trigger": {
+        "excel_col": "E",
+        "field": "pib"
+      }
+    },
+    "append_policy": {
+      "mode": "first_empty",
+      "empty_check": {
+        "primary": [
+          "E"
+        ],
+        "secondary": [
+          "B",
+          "I",
+          "J"
+        ],
+        "treat_whitespace_as_empty": true
+      }
+    },
+    "dedupe": {
+      "enabled": true,
+      "keys": [
+        {
+          "excel_cols": [
+            "E"
+          ],
+          "field": "pib_canon"
+        },
+        {
+          "excel_cols": [
+            "B"
+          ],
+          "field": "order_number"
+        },
+        {
+          "excel_cols": [
+            "J"
+          ],
+          "field": "event_category"
+        },
+        {
+          "excel_cols": [
+            "I"
+          ],
+          "field": "event_date"
+        }
+      ],
+      "strategy": "skip_if_same_sheet_and_same_keys",
+      "window": "entire_sheet"
+    }
+  },
+  "normalization": {
+    "pib": {
+      "canon_format": "SURNAME_UPPER Name Patronymic",
+      "rules": [
+        "trim",
+        "collapse_spaces",
+        "fix_apostrophe",
+        "surname_upper",
+        "name_title_case",
+        "patronymic_title_case",
+        "keep_hyphenated_surnames",
+        "preserve_letters_uk"
+      ],
+      "fallback": {
+        "if_only_initials": "keep_as_is_and_log_warn",
+        "if_two_tokens": "treat_as_surname_name"
+      }
+    },
+    "rank_category": {
+      "allowed": [
+        "Солдат",
+        "Сержант",
+        "Офіцер"
+      ],
+      "mapping": {
+        "солдат": "Солдат",
+        "старший солдат": "Солдат",
+        "молодший сержант": "Сержант",
+        "сержант": "Сержант",
+        "старший сержант": "Сержант",
+        "штаб-сержант": "Сержант",
+        "лейтенант": "Офіцер",
+        "старший лейтенант": "Офіцер",
+        "капітан": "Офіцер",
+        "майор": "Офіцер",
+        "підполковник": "Офіцер",
+        "полковник": "Офіцер"
+      },
+      "on_unknown": "leave_blank_and_log_warn"
+    },
+    "service_type": {
+      "allowed": [
+        "Контракт",
+        "Мобілізований"
+      ],
+      "mapping": {
+        "контракт": "Контракт",
+        "за контрактом": "Контракт",
+        "моб": "Мобілізований",
+        "мобілізація": "Мобілізований",
+        "мобілізований": "Мобілізований"
+      },
+      "on_unknown": "leave_blank"
+    },
+    "units": {
+      "dictionary": {
+        "sheet": "Категорії",
+        "full_to_short_range": "D:E",
+        "unit_list_range": "A3:A36"
+      },
+      "match": {
+        "mode": "best_effort",
+        "steps": [
+          "exact",
+          "casefold",
+          "contains",
+          "token_jaccard"
+        ],
+        "min_score": 0.72
+      },
+      "on_unknown": {
+        "action": "write_raw",
+        "also_note": "append_to_note",
+        "note_prefix": "Невідомий підрозділ: "
+      }
+    },
+    "arrival_source": {
+      "allowed_range": "Категорії!B2:B25",
+      "on_unknown": "write_raw_and_note"
+    },
+    "departure_reason": {
+      "allowed_range": "Категорії!C2:C22",
+      "mapping_keywords": {
+        "станом здоров": "За станом здоров’я",
+        "перевед": "Переведено",
+        "загин": "Загибель",
+        "зник": "Зник безвісти",
+        "самовіль": "Самовільне залишення",
+        "відпуст": "Відпустка",
+        "лікуван": "Лікування/Госпіталь"
+      },
+      "on_unknown": "write_raw_and_note"
+    },
+    "dates": {
+      "accepted_formats": [
+        "dd.mm.yyyy",
+        "dd.mm.yy",
+        "d mmmm yyyy"
+      ],
+      "output_excel": "dd.mm.yyyy",
+      "on_parse_fail": "leave_blank_and_note"
+    },
+    "flags_yesno": {
+      "excel_yes": "Так",
+      "excel_no": "",
+      "truthy": [
+        true,
+        "так",
+        "yes",
+        1,
+        "1"
+      ],
+      "falsy": [
+        false,
+        "ні",
+        "no",
+        0,
+        "0",
+        ""
+      ]
+    }
+  },
+  "sheet_rules": {
+    "Н 56 омпбр": {
+      "type": "arrival",
+      "required_fields": [
+        "pib",
+        "unit_to",
+        "position",
+        "arrival_source"
+      ],
+      "field_to_column": {
+        "order_number": "B",
+        "rank": "C",
+        "rank_category": "D",
+        "pib": "E",
+        "service_type": "F",
+        "from_unit": "G",
+        "unit_to": "H",
+        "position": "I",
+        "arrival_date": "J",
+        "arrival_source": "K",
+        "birth_date": "L",
+        "note": "T",
+        "flag_need_vlk": "P",
+        "flag_unfit_vlk": "Q",
+        "flag_release_basis": "R",
+        "flag_refuses_tasks": "S"
+      },
+      "fixed_lists": {
+        "D": {
+          "type": "inline",
+          "value": "Солдат,Сержант,Офіцер"
+        },
+        "F": {
+          "type": "inline",
+          "value": "Контракт,Мобілізований"
+        },
+        "H": {
+          "type": "range",
+          "value": "Категорії!A3:A36"
+        },
+        "K": {
+          "type": "range",
+          "value": "Категорії!B2:B25"
+        },
+        "P": {
+          "type": "inline",
+          "value": "Так"
+        },
+        "Q": {
+          "type": "inline",
+          "value": "Так"
+        },
+        "R": {
+          "type": "inline",
+          "value": "Так"
+        },
+        "S": {
+          "type": "inline",
+          "value": "Так"
+        }
+      },
+      "do_not_write": [
+        "A",
+        "M"
+      ],
+      "notes": "A (№) та M (вік) рахуються формулами."
+    },
+    "Н придані 56 омпбр": {
+      "type": "arrival",
+      "required_fields": [
+        "pib",
+        "unit_to",
+        "position",
+        "arrival_source"
+      ],
+      "inherit_from": "Н 56 омпбр"
+    },
+    "В 56 омпбр": {
+      "type": "departure",
+      "required_fields": [
+        "pib",
+        "from_unit",
+        "departure_reason"
+      ],
+      "field_to_column": {
+        "order_number": "B",
+        "rank": "C",
+        "rank_category": "D",
+        "pib": "E",
+        "unit_to": "F",
+        "from_unit": "G",
+        "position": "H",
+        "departure_date": "I",
+        "departure_reason": "J",
+        "note": "K"
+      },
+      "fixed_lists": {
+        "D": {
+          "type": "inline",
+          "value": "Солдат,Сержант,Офіцер"
+        },
+        "F": {
+          "type": "range",
+          "value": "Категорії!A3:A36"
+        },
+        "G": {
+          "type": "range",
+          "value": "Категорії!A3:A36"
+        },
+        "J": {
+          "type": "range",
+          "value": "Категорії!C2:C22"
+        }
+      },
+      "do_not_write": [
+        "A"
+      ],
+      "notes": "A (№) рахується формулою по ПІБ."
+    },
+    "В придані 56 омпбр": {
+      "type": "departure",
+      "required_fields": [
+        "pib",
+        "from_unit",
+        "departure_reason"
+      ],
+      "inherit_from": "В 56 омпбр"
+    }
+  },
+  "logging": {
+    "files": {
+      "events": "logs/autofill_events.log",
+      "errors": "logs/autofill_errors.log",
+      "report": "output/reports/autofill_report.json"
+    },
+    "report_fields": [
+      "source_file",
+      "sheet",
+      "row",
+      "pib",
+      "event_type",
+      "missing_required_fields",
+      "dictionary_misses",
+      "dedupe_skipped"
+    ]
+  }
+}

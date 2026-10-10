@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "word_etalon_template": "templates/etalon/dodatok-1.docx",
+  "excel_template": "templates/N_fixed.xlsx",
+  "notes": "Official (etalon) Word template is used as the canonical field list; mapping columns are resolved from the Excel template headers."
+}
