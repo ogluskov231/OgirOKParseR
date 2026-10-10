@@ -1,0 +1,424 @@
+{
+  "template": {
+    "word_etalon": "templates/etalon/dodatok-1.docx",
+    "excel_template": "templates/N_fixed.xlsx",
+    "word_sha256": "55f609aa37ead5c8badf83e049f1a9434ebb602c1da6cc04081ccc81d7d2ea24",
+    "excel_sha256": "b6612405d15c7783979d36df79d61fb9042114909f2e303e0a707d3734f31ef8",
+    "source": "generated_from_etalon_and_excel_headers"
+  },
+  "version": "generated",
+  "generated_at": "2026-02-01T14:24:42Z",
+  "notes": [
+    "Цей мапінг генерується зі статичного офіційного шаблону Excel (templates/N_fixed.xlsx) та прив’язується до еталонного Word-шаблону.",
+    "Рядок вважається записом, якщо заповнено ПІБ (колонка E). Нумерація A рахується формулою шаблону."
+  ],
+  "input_schema": {
+    "record_fields_min": [
+      "pib",
+      "rank",
+      "event_type"
+    ]
+  },
+  "routing_rules": [
+    {
+      "when": {
+        "event_type": "arrival",
+        "is_attached": false
+      },
+      "sheet": "Н 56 омпбр"
+    },
+    {
+      "when": {
+        "event_type": "departure",
+        "is_attached": false
+      },
+      "sheet": "В 56 омпбр"
+    },
+    {
+      "when": {
+        "event_type": "arrival",
+        "is_attached": true
+      },
+      "sheet": "Н придані 56 омпбр"
+    },
+    {
+      "when": {
+        "event_type": "departure",
+        "is_attached": true
+      },
+      "sheet": "В придані 56 омпбр"
+    }
+  ],
+  "normalization": {
+    "pib": {
+      "upper": true,
+      "trim": true
+    }
+  },
+  "sheet_mappings": {
+    "Н 56 омпбр": {
+      "key": {
+        "column": "E",
+        "field": "pib"
+      },
+      "columns": {
+        "B": {
+          "field": "order_ref",
+          "required": false
+        },
+        "C": {
+          "field": "rank",
+          "required": false
+        },
+        "D": {
+          "field": "rank_category",
+          "required": false,
+          "type": "list",
+          "source": "inline:Солдат,Сержант,Офіцер"
+        },
+        "E": {
+          "field": "pib",
+          "required": true
+        },
+        "F": {
+          "field": "service_type",
+          "required": false,
+          "type": "list",
+          "source": "inline:Контракт,Мобілізований"
+        },
+        "G": {
+          "field": "from_where",
+          "required": false
+        },
+        "H": {
+          "field": "to_subdivision",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!A3:A36"
+        },
+        "I": {
+          "field": "position",
+          "required": false
+        },
+        "J": {
+          "field": "event_date",
+          "required": false,
+          "type": "date"
+        },
+        "K": {
+          "field": "arrival_source",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!B2:B25",
+          "fallback": "from_where"
+        },
+        "L": {
+          "field": "dob",
+          "required": false,
+          "type": "date"
+        },
+        "N": {
+          "field": "flags.bzvp",
+          "required": false,
+          "type": "flag",
+          "true_value": "Відсутня"
+        },
+        "O": {
+          "field": "flags.fit_support_units",
+          "required": false,
+          "type": "flag",
+          "true_value": "Придатний до підрозділів забезпечення"
+        },
+        "P": {
+          "field": "flags.need_vlk",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "Q": {
+          "field": "flags.unfit_vlk",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "R": {
+          "field": "flags.has_discharge_grounds",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "S": {
+          "field": "flags.refuses_combat",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "T": {
+          "field": "notes",
+          "required": false,
+          "compose": [
+            {
+              "label": "Подія",
+              "field": "event_label"
+            },
+            {
+              "label": "Документ",
+              "field": "source_doc"
+            }
+          ]
+        }
+      },
+      "meta": {
+        "header_row": 3
+      }
+    },
+    "В 56 омпбр": {
+      "key": {
+        "column": "E",
+        "field": "pib"
+      },
+      "columns": {
+        "B": {
+          "field": "order_ref",
+          "required": false
+        },
+        "C": {
+          "field": "rank",
+          "required": false
+        },
+        "D": {
+          "field": "rank_category",
+          "required": false,
+          "type": "list",
+          "source": "inline:Солдат,Сержант,Офіцер"
+        },
+        "E": {
+          "field": "pib",
+          "required": true
+        },
+        "F": {
+          "field": "to_subdivision",
+          "required": true
+        },
+        "G": {
+          "field": "from_subdivision",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!A3:A36"
+        },
+        "H": {
+          "field": "position",
+          "required": false
+        },
+        "I": {
+          "field": "event_date",
+          "required": false,
+          "type": "date"
+        },
+        "J": {
+          "field": "departure_reason",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!C2:C22"
+        },
+        "K": {
+          "field": "notes",
+          "required": false,
+          "compose": [
+            {
+              "label": "Подія",
+              "field": "event_label"
+            },
+            {
+              "label": "Документ",
+              "field": "source_doc"
+            }
+          ]
+        }
+      },
+      "meta": {
+        "header_row": 3
+      }
+    },
+    "Н придані 56 омпбр": {
+      "key": {
+        "column": "E",
+        "field": "pib"
+      },
+      "columns": {
+        "B": {
+          "field": "order_ref",
+          "required": false
+        },
+        "C": {
+          "field": "rank",
+          "required": false
+        },
+        "D": {
+          "field": "rank_category",
+          "required": false,
+          "type": "list",
+          "source": "inline:Солдат,Сержант,Офіцер"
+        },
+        "E": {
+          "field": "pib",
+          "required": true
+        },
+        "F": {
+          "field": "service_type",
+          "required": false,
+          "type": "list",
+          "source": "inline:Контракт,Мобілізований"
+        },
+        "G": {
+          "field": "from_where",
+          "required": false
+        },
+        "H": {
+          "field": "to_subdivision",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!A3:A36"
+        },
+        "I": {
+          "field": "position",
+          "required": false
+        },
+        "J": {
+          "field": "event_date",
+          "required": false,
+          "type": "date"
+        },
+        "K": {
+          "field": "arrival_source",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!B2:B25",
+          "fallback": "from_where"
+        },
+        "L": {
+          "field": "dob",
+          "required": false,
+          "type": "date"
+        },
+        "N": {
+          "field": "flags.bzvp",
+          "required": false,
+          "type": "flag",
+          "true_value": "Відсутня"
+        },
+        "O": {
+          "field": "flags.fit_support_units",
+          "required": false,
+          "type": "flag",
+          "true_value": "Придатний до підрозділів забезпечення"
+        },
+        "P": {
+          "field": "flags.need_vlk",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "Q": {
+          "field": "flags.unfit_vlk",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "R": {
+          "field": "flags.has_discharge_grounds",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "S": {
+          "field": "flags.refuses_combat",
+          "required": false,
+          "type": "flag",
+          "true_value": "Так"
+        },
+        "T": {
+          "field": "notes",
+          "required": false,
+          "compose": [
+            {
+              "label": "Подія",
+              "field": "event_label"
+            },
+            {
+              "label": "Документ",
+              "field": "source_doc"
+            }
+          ]
+        }
+      },
+      "meta": {
+        "header_row": 3
+      }
+    },
+    "В придані 56 омпбр": {
+      "key": {
+        "column": "E",
+        "field": "pib"
+      },
+      "columns": {
+        "B": {
+          "field": "order_ref",
+          "required": false
+        },
+        "C": {
+          "field": "rank",
+          "required": false
+        },
+        "D": {
+          "field": "rank_category",
+          "required": false,
+          "type": "list",
+          "source": "inline:Солдат,Сержант,Офіцер"
+        },
+        "E": {
+          "field": "pib",
+          "required": true
+        },
+        "F": {
+          "field": "to_subdivision",
+          "required": true
+        },
+        "G": {
+          "field": "from_subdivision",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!A3:A36"
+        },
+        "I": {
+          "field": "event_date",
+          "required": false,
+          "type": "date"
+        },
+        "J": {
+          "field": "departure_reason",
+          "required": true,
+          "type": "list",
+          "source": "Категорії!C2:C22"
+        },
+        "K": {
+          "field": "notes",
+          "required": false,
+          "compose": [
+            {
+              "label": "Подія",
+              "field": "event_label"
+            },
+            {
+              "label": "Документ",
+              "field": "source_doc"
+            }
+          ]
+        }
+      },
+      "meta": {
+        "header_row": 3
+      }
+    }
+  }
+}
